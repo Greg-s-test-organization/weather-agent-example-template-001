@@ -2,6 +2,7 @@ import { openai } from '@ai-sdk/openai';
 import { Agent } from '@mastra/core/agent';
 import { weatherTool } from '../tools';
 import { Memory } from "@mastra/memory";
+import { LibSQLStore } from '@mastra/libsql';
 
 export const weatherAgent = new Agent({
   name: 'Weather Agent',
@@ -19,5 +20,10 @@ export const weatherAgent = new Agent({
 `,
   model: openai(process.env.MODEL ?? "gpt-4o"),
   tools: { weatherTool },
-  memory: new Memory(),
+  memory: new Memory({
+    // your config
+    storage: new LibSQLStore({
+      url: 'file:../../memory.db' // relative path from bundled .mastra/output dir
+    })
+  })
 });
